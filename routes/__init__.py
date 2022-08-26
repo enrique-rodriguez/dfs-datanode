@@ -2,8 +2,8 @@ import uuid
 import bottle
 from bottle import request
 from bottle import response
+from datanode.blockstorage import views
 from datanode.blockstorage.domain import commands
-
 
 def routes(bus):
     root = bottle.Bottle()
@@ -26,8 +26,7 @@ def routes(bus):
     
     @root.get("/blocks/<bid>")
     def get_block(bid):
-        store = bus.deps.get("store")
-        content = store.get(bid)
+        content = views.get_block(bus, bid)
         if not content:
             response.status = 404
             content = b""

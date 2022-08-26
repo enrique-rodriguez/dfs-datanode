@@ -1,0 +1,27 @@
+__main__ - INFO - Registrating datanode 127.0.0.1:9001 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9000 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9002 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9002 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9001 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9000 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9002 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9001 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9000 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9002 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9001 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - Registrating datanode 127.0.0.1:9000 with metadata server 127.0.0.1:8080.
+__main__ - INFO - Datanode already registered.
+__main__ - INFO - SHUTTING DOWN DATANODE SERVER 127.0.0.1:9000
+__main__ - INFO - SHUTTING DOWN DATANODE SERVER 127.0.0.1:9001
+__main__ - INFO - SHUTTING DOWN DATANODE SERVER 127.0.0.1:9002
