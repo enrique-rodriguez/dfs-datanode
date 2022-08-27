@@ -4,7 +4,8 @@ from .application import handlers
 
 
 COMMAND_HANDLERS = {
-    commands.PutBlock: handlers.put_block
+    commands.PutBlock: handlers.put_block,
+    commands.DeleteBlock: handlers.delete_block,
 }
 
 

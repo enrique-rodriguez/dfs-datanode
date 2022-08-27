@@ -1,6 +1,6 @@
 import os
 import pytest
-from datanode.blockstorage.infrastructure.fs_store import FileSystemStore
+from datanode.blockstorage.infrastructure import fs_store
 
 
 @pytest.fixture
@@ -9,7 +9,7 @@ def get_store(tmp_path):
     os.mkdir(location)
 
     def factory():
-        return FileSystemStore(location)
+        return fs_store.FileSystemStore(location)
 
     return factory
 
@@ -36,3 +36,19 @@ def test_persistence(get_store):
     store = get_store()
 
     assert store.get("payload") == b"the payload"
+
+
+def test_delete(get_store):
+    store = get_store()
+
+    store.put("payload", b"the payload")
+    store.delete("payload")
+
+    assert store.get("payload") == None
+
+
+def test_raises_value_if_delete_key_that_doesnt_exist(get_store):
+    store = get_store()
+
+    with pytest.raises(ValueError):
+        store.delete("payload")

@@ -17,3 +17,10 @@ class FileSystemStore(Store):
             return None
         with open(path, 'rb') as f:
             return f.read()
+    
+    def delete(self, name):
+        path = os.path.join(self.save_location, name)
+        if not os.path.exists(path):
+            raise ValueError
+
+        os.remove(path)

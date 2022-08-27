@@ -46,3 +46,13 @@ def get_block(bid, client: TestApp, expect_errors=False):
         assert res.status_code == 200
 
     return res
+
+
+@use_client
+def delete_block(bid, client: TestApp, expect_errors=False):
+    res = client.delete(f"/dfs/blocks/{bid}", expect_errors=expect_errors)
+
+    if not expect_errors:
+        assert res.status_code == 200
+
+    return res

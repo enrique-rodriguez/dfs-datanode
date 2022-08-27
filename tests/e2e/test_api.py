@@ -10,14 +10,15 @@ def api_client(tmp_path):
         {
             "basedir": str(tmp_path),
             "db": {"name": "data.json"},
-            "blocks_save_location": "blocks"
+            "blocks_save_location": "blocks",
         }
     )
 
     return client
 
+
 def test_put_block(api_client):
-    payload = b'g\r9\x075YF\xdf\xb7\xbfzsB\xc2\xcb\xa6'
+    payload = b"g\r9\x075YF\xdf\xb7\xbfzsB\xc2\xcb\xa6"
     files = [("block", "block", payload)]
     put_res = api_client.put_block(files)
     bid = put_res.json.get("id")
@@ -28,20 +29,40 @@ def test_put_block(api_client):
     assert get_res.body == payload
 
 
+def test_delete_no_existing_block_gives_404(api_client):
+    res = api_client.delete_block(uuid.uuid4().hex, expect_errors=True)
+
+    assert res.status_code == 404
+
+
+def test_delete_block(api_client):
+    payload = b"g\r9\x075YF\xdf\xb7\xbfzsB\xc2\xcb\xa6"
+    files = [("block", "block", payload)]
+    put_res = api_client.put_block(files)
+    bid = put_res.json.get("id")
+
+    delete_res = api_client.delete_block(bid)
+    get_res = api_client.get_block(bid, expect_errors=True)
+
+    assert delete_res.status_code == 200
+    assert get_res.status_code == 404
+
+
 def test_put_block_with_no_file(api_client):
     put_res = api_client.put_block([], expect_errors=True)
 
     assert put_res.status_code == 400
 
+
 def test_put_empty_block(api_client):
-    payload = b''
+    payload = b""
     files = [("block", "block", payload)]
     put_res = api_client.put_block(files, expect_errors=True)
 
     assert put_res.status_code == 400
 
+
 def test_get_gives_404_when_block_not_found(api_client):
     get_res = api_client.get_block(uuid.uuid4().hex, expect_errors=True)
 
     assert get_res.status_code == 404
-

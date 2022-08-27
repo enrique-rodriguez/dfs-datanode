@@ -6,3 +6,8 @@ from dfs_shared.domain import commands
 class PutBlock(commands.Command):
     block_id: str
     payload: bytes
+
+
+@dataclass(frozen=True)
+class DeleteBlock(commands.Command):
+    block_id: str

@@ -6,12 +6,20 @@ from dfs_shared.application.uow import UnitOfWork
 
 class InMemoryStore:
     def __init__(self):
-        self.put_called = False
         self.storage = dict()
     
     def put(self, name, value):
         self.put_called = True
         self.storage[name] = value
+    
+    def get(self, name):
+        return self.storage.get(name, None)
+    
+    def delete(self, name):
+        self.delete_called = True
+        if name not in self.storage:
+            raise ValueError
+        del self.storage[name]
 
 
 class FakeUnitOfWork(UnitOfWork):
