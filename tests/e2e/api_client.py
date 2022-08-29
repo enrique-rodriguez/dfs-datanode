@@ -2,18 +2,26 @@ import json
 from app import get_app
 from webtest import TestApp
 
+from datanode.bootstrap import bootstrap
+
 
 config = {}
+
+bus = None
 
 
 def set_config(new_config):
     global config
+    global bus
     config = new_config
+    bus = bootstrap(config)
 
 
 def use_client(func):
+    
+
     def inner(*args, **kwargs):
-        return func(client=TestApp(get_app(config)), *args, **kwargs)
+        return func(client=TestApp(get_app(bus)), *args, **kwargs)
 
     return inner
 

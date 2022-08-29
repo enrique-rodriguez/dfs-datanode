@@ -3,7 +3,8 @@ import bottle
 from bottle import request
 from bottle import response
 from datanode.blockstorage import views
-from datanode.blockstorage.domain import commands, exceptions
+from datanode.blockstorage.domain import commands
+from datanode.blockstorage.domain import exceptions
 
 
 def routes(bus):

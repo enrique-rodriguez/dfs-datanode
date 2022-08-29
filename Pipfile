@@ -7,6 +7,8 @@ name = "pypi"
 bottle = "*"
 dfs-shared = {git = "https://github.com/enrique-rodriguez/dfs-shared"}
 requests = "*"
+paste = "*"
+pika = "*"
 
 [dev-packages]
 pytest = "*"
