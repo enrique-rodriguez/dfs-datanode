@@ -9,3 +9,7 @@ class Store(abc.ABC):
     @abc.abstractmethod
     def get(self, name):
         raise NotImplementedError
+
+    @abc.abstractmethod
+    def delete(self, name):
+        raise NotImplementedError
