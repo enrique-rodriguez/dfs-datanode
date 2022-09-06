@@ -1,11 +1,10 @@
-import json
 import pika
 import threading
 
 
 def consumer_factory(func, bus):
     def inner(ch, method, properties, body):
-        return func(bus, json.loads(body.decode('utf-8')))
+        return func(bus, body)
 
     inner.__name__ = func.__name__
     return inner
@@ -55,20 +54,3 @@ registry = ConsumerRegistry()
 
 def register(*args, **kwargs):
     registry.register(*args, **kwargs)
-
-
-class ExternalMessage:
-    def __init__(self, exchange, exchange_type, routing_key, body, host="localhost"):
-        self.exchange = exchange
-        self.exchange_type = exchange_type
-        self.routing_key = routing_key
-        self.body = body
-        self.host = host
-
-def publish_message(msg: ExternalMessage):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=msg.host))
-    channel = connection.channel()
-    channel.exchange_declare(exchange=msg.exchange, exchange_type=msg.exchange_type)
-    body = json.dumps(msg.body)
-    channel.basic_publish(exchange=msg.exchange, routing_key=msg.routing_key, body=body)
-    connection.close()

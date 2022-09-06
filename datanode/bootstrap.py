@@ -1,11 +1,9 @@
 import os
-from datanode.blockstorage.infrastructure.json_repo import JsonRepository
 from datanode.uow import JsonUnitOfWork
 from datanode.blockstorage import EVENT_HANDLERS
 from datanode.blockstorage import COMMAND_HANDLERS
 from dfs_shared.application import message_bus
 from datanode.blockstorage.infrastructure.fs_store import FileSystemStore
-
 
 
 class MessageBus(message_bus.MessageBus):
@@ -42,9 +40,8 @@ def get_store(basedir, blocks_save_location, **kwargs):
         os.mkdir(path)
     return FileSystemStore(path)
 
-
 def bootstrap(config, **kwargs):
-    store = kwargs.pop("store", get_store(**config))
     uow = kwargs.pop("uow", get_unit_of_work(**config))
+    store = kwargs.pop("store", get_store(**config))
 
     return MessageBus(uow, COMMAND_HANDLERS, EVENT_HANDLERS, store=store)

@@ -1,12 +1,13 @@
+import json
 import logging
+import requests
 import argparse
 import external
 import messaging
 from app import get_app
-from settings import get_config
-from utils.interval import set_interval
-from utils.interval import clear_interval
+from pathlib import Path
 from datanode.bootstrap import bootstrap
+
 
 logging.basicConfig(
     filename="std.log",
@@ -15,17 +16,17 @@ logging.basicConfig(
 )
 
 
-def register_datanode(host, port, logger):
-    logger.info(f"Publishing datanode registration message.")
+def register_to_metadata_server(url, host, port, logger):
+    logger.info(f"Registrating datanode {host}:{port} with metadata server at {url}.")
+    try:
+        res = requests.post(f"{url}/datanodes", data={"host": host, "port": port})
+    except requests.exceptions.ConnectionError:
+        exit(f"Could not establish connection with metadata server at {url}")
 
-    messaging.publish_message(
-        messaging.ExternalMessage(
-            exchange="datanodes",
-            exchange_type="fanout",
-            routing_key="register_datanode",
-            body={"host": host, "port": port},
-        )
-    )
+    msg = f"Registration with metadata server at {url} successful."
+    if res.status_code == 400:
+        msg = "Datanode already registered."
+    logger.info(msg)
 
 
 def get_parser():
@@ -38,6 +39,18 @@ def get_parser():
     return parser
 
 
+def get_config():
+    with open("conf.json", "r") as f:
+        config = json.load(f)
+    parser = get_parser()
+    args = parser.parse_args()
+    config["host"] = args.host
+    config["port"] = args.port
+    config["basedir"] = str(Path(__file__).resolve().parent)
+    config["blocks_save_location"] = args.dir
+    return config
+
+
 def start_consumers(bus):
     for exchange, handlers in external.HANDLERS.items():
         for hndlr in handlers:
@@ -45,30 +58,29 @@ def start_consumers(bus):
             messaging.register(exchange, callback)
 
 
-def start_webapp(bus, host, port, logger):
+def start_webapp(bus, config, host, port, logger):
+    meta_host = config["meta"]["host"]
+    meta_port = config["meta"]["port"]
+
+    address = f"{meta_host}:{meta_port}"
+    meta_url = f"http://{address}/dfs"
+
+    register_to_metadata_server(meta_url, host, port, logger)
+
     app = get_app(bus)
-    app.run(host=host, port=port, server="paste", debug=True)
+    app.run(host=host, port=port, server="paste", debug=False)
 
 
 if __name__ == "__main__":
     config = get_config()
-    parser = get_parser()
-    args = parser.parse_args()
-    config["blocks_save_location"] = args.dir
     bus = bootstrap(config)
 
-    host = args.host
-    port = args.port
+    host = config.get("host")
+    port = config.get("port")
 
     logger = logging.getLogger(__name__)
 
-    reg_interval = set_interval(
-        register_datanode, args=(host, port, logger), interval=20
-    )
-
     start_consumers(bus)
-    start_webapp(bus, host, port, logger)
-
-    clear_interval(reg_interval)
+    start_webapp(bus, config, host, port, logger)
 
     logger.info(f"SHUTTING DOWN DATANODE SERVER {host}:{port}")

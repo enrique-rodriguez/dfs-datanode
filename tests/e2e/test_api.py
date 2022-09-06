@@ -16,10 +16,11 @@ def api_client(tmp_path):
 
     return client
 
+
 def test_put_block(api_client):
     payload = b"g\r9\x075YF\xdf\xb7\xbfzsB\xc2\xcb\xa6"
     files = [("block", "block", payload)]
-    put_res = api_client.put_block("1", files)
+    put_res = api_client.put_block(files)
     bid = put_res.json.get("id")
     get_res = api_client.get_block(bid)
 
@@ -37,7 +38,7 @@ def test_delete_no_existing_block_gives_404(api_client):
 def test_delete_block(api_client):
     payload = b"g\r9\x075YF\xdf\xb7\xbfzsB\xc2\xcb\xa6"
     files = [("block", "block", payload)]
-    put_res = api_client.put_block("1", files)
+    put_res = api_client.put_block(files)
     bid = put_res.json.get("id")
 
     delete_res = api_client.delete_block(bid)
@@ -48,7 +49,7 @@ def test_delete_block(api_client):
 
 
 def test_put_block_with_no_file(api_client):
-    put_res = api_client.put_block('1', [], expect_errors=True)
+    put_res = api_client.put_block([], expect_errors=True)
 
     assert put_res.status_code == 400
 
@@ -56,7 +57,7 @@ def test_put_block_with_no_file(api_client):
 def test_put_empty_block(api_client):
     payload = b""
     files = [("block", "block", payload)]
-    put_res = api_client.put_block("1", files, expect_errors=True)
+    put_res = api_client.put_block(files, expect_errors=True)
 
     assert put_res.status_code == 400
 

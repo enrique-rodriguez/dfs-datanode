@@ -27,10 +27,15 @@ def use_client(func):
 
 
 @use_client
-def put_block(file_id, files, client: TestApp, expect_errors=False):
+def home(client):
+    return client.get("/", expect_errors=True)
+
+
+@use_client
+def put_block(files, client: TestApp, expect_errors=False):
 
     res = client.post(
-        f"/dfs/blocks/{file_id}",
+        "/dfs/blocks",
         upload_files=files,
         expect_errors=expect_errors,
     )
